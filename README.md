@@ -5,6 +5,7 @@ The **Billing-Engine Service** is a backend service responsible for handling loa
 ## Table of Contents
 - [Overview](#overview)
 - [Features](#features)
+- [ERD](#erd)
 - [Configuration](#configuration)
 - [Setup and Installation](#setup-and-installation)
 - [Usage](#usage)
@@ -29,6 +30,11 @@ The **Billing-Engine Service** is designed to interact with a database to fetch 
 - Process payments, update loans, and create payment records.
 - Transaction management with commit/rollback support.
 - Performance monitoring using APM.
+
+## ERD
+Detail entity relational diagram
+
+![ERD](docs/ERD.png)
 
 ## Configuration
 
