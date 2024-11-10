@@ -1,0 +1,18 @@
+@startuml
+
+actor Client
+participant "Billing-Engine" as BE
+participant "DB" as DB
+
+== GetOutstandingLoan ==
+
+Client -> BE: GetOutstandingLoan(userID)
+BE -> DB: GetUserByUsername(userID)
+DB -> BE: Return User
+BE -> DB: GetLoanByUserID(userID)
+DB -> BE: Return Loan
+BE -> DB: GetOverdueScheduleByLoanID(loanID)
+DB -> BE: Return Schedules
+BE -> Client: Return OutstandingLoan
+
+@enduml

@@ -1,0 +1,36 @@
+@startuml
+
+actor Client
+participant "Billing-Engine" as BE
+participant "DB" as DB
+
+== MakePayment ==
+
+Client -> BE: MakePayment(userID, amount)
+BE -> DB: Start Transaction
+alt Transaction Error
+    BE -> DB: Rollback
+    BE -> Client: Return Error
+else
+    BE -> DB: GetUserByUsername(userID)
+    DB -> BE: Return User
+    BE -> DB: GetLoanByUserID(userID)
+    DB -> BE: Return Loan
+    BE -> DB: GetOverdueScheduleByLoanID(loanID)
+    DB -> BE: Return Schedules
+    alt No Overdue Schedules
+        BE -> DB: Rollback
+        BE -> Client: Return Error
+    else
+        BE -> DB: Update Loan(loan)
+        DB -> BE: Return Success
+        BE -> DB: Update Schedule(schedule)
+        DB -> BE: Return Success
+        BE -> DB: CreatePayment(payment)
+        DB -> BE: Return Success
+    end
+    BE -> DB: Commit Transaction
+    BE -> Client: Return Success
+end
+
+@enduml

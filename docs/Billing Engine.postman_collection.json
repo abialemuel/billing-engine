@@ -1,0 +1,377 @@
+{
+	"info": {
+		"_postman_id": "616b4c13-3717-49eb-a2d0-ff4a69bd0e15",
+		"name": "Billing Engine",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "27112936"
+	},
+	"item": [
+		{
+			"name": "Get Outstanding & Detail",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "abialemuel",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "abialemuel",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/v1/billing-engine/user/outstanding",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"billing-engine",
+						"user",
+						"outstanding"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Normal Resp",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/v1/billing-engine/user/outstanding",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"billing-engine",
+								"user",
+								"outstanding"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "Date",
+							"value": "Sun, 10 Nov 2024 09:11:29 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "164"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"code\": 200,\n    \"message\": \"Success\",\n    \"payload\": {\n        \"loan_id\": 1,\n        \"username\": \"abialemuel\",\n        \"outstanding\": 5500000,\n        \"is_delinquent\": false,\n        \"upcoming_amount\": 0,\n        \"missed_payment\": 0\n    }\n}"
+				},
+				{
+					"name": "1 upcoming payment",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/v1/billing-engine/user/outstanding",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"billing-engine",
+								"user",
+								"outstanding"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "Date",
+							"value": "Sun, 10 Nov 2024 09:13:23 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "169"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"code\": 200,\n    \"message\": \"Success\",\n    \"payload\": {\n        \"loan_id\": 1,\n        \"username\": \"abialemuel\",\n        \"outstanding\": 5500000,\n        \"is_delinquent\": false,\n        \"upcoming_amount\": 110000,\n        \"missed_payment\": 1\n    }\n}"
+				},
+				{
+					"name": "2 missed payment (delinquent)",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/v1/billing-engine/user/outstanding",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"billing-engine",
+								"user",
+								"outstanding"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "Date",
+							"value": "Sun, 10 Nov 2024 09:14:30 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "168"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"code\": 200,\n    \"message\": \"Success\",\n    \"payload\": {\n        \"loan_id\": 1,\n        \"username\": \"abialemuel\",\n        \"outstanding\": 5500000,\n        \"is_delinquent\": true,\n        \"upcoming_amount\": 220000,\n        \"missed_payment\": 2\n    }\n}"
+				},
+				{
+					"name": "Normal Resp with deducted outstanding",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/v1/billing-engine/user/outstanding",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"billing-engine",
+								"user",
+								"outstanding"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "Date",
+							"value": "Sun, 10 Nov 2024 09:17:51 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "164"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"code\": 200,\n    \"message\": \"Success\",\n    \"payload\": {\n        \"loan_id\": 1,\n        \"username\": \"abialemuel\",\n        \"outstanding\": 5280000,\n        \"is_delinquent\": false,\n        \"upcoming_amount\": 0,\n        \"missed_payment\": 0\n    }\n}"
+				}
+			]
+		},
+		{
+			"name": "Make payment",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "abialemuel",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "abialemuel",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"amount\": 220000\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/v1/billing-engine/user/payment",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"billing-engine",
+						"user",
+						"payment"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "No overdue schedule",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"amount\": 220000\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/v1/billing-engine/user/payment",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"billing-engine",
+								"user",
+								"payment"
+							]
+						}
+					},
+					"status": "Internal Server Error",
+					"code": 500,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "Date",
+							"value": "Sun, 10 Nov 2024 09:12:18 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "79"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"code\": 400,\n    \"status\": \"VALIDATION_ERROR\",\n    \"message\": \"no overdue schedule found\"\n}"
+				},
+				{
+					"name": "Success payment",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"amount\": 220000\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/v1/billing-engine/user/payment",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"billing-engine",
+								"user",
+								"payment"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "Date",
+							"value": "Sun, 10 Nov 2024 09:17:45 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "52"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"code\": 200,\n    \"status\": \"SUCCESS\",\n    \"message\": \"Success\"\n}"
+				}
+			]
+		}
+	]
+}

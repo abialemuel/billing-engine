@@ -1,0 +1,14 @@
+# just sample config file for config testing
+App:
+    name: "billing-engine"
+    version: "1.0.0"
+    env: "dev"
+log:
+    level: "info"
+    format: "json"
+
+APM:
+    enabled: true
+    host: "otel-collector"
+    port: 4317
+    rate: 1
