@@ -91,7 +91,7 @@ Highly recommend using Docker Compose for easier setup, as it will automatically
 1. Run all container:
 
     ```sh
-    docker compose up -d --build
+    make run-docker
     ```
 
 ## Usage
@@ -160,6 +160,8 @@ Example Response if success:
     ```
 
 ## Postman Collection
+
+![Postman Example](docs/postman.png)
 
 You can find the Postman collection for the Billing-Engine Service in the [docs/Billing Engine.postman_collection.json](docs/Billing%20Engine.postman_collection.json) file.
 

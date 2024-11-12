@@ -57,7 +57,7 @@ func (h *Handler) MakePayment(c echo.Context) error {
 
 	err := h.service.MakePayment(ctx, username, req.Amount)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, common.NewValidationErrorResponse(err.Error()))
+		return c.JSON(http.StatusBadRequest, common.NewValidationErrorResponse(err.Error()))
 	}
 	return c.JSON(http.StatusOK, common.NewDefaultSuccessResponse())
 }

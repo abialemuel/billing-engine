@@ -294,8 +294,8 @@
 							]
 						}
 					},
-					"status": "Internal Server Error",
-					"code": 500,
+					"status": "Bad Request",
+					"code": 400,
 					"_postman_previewlanguage": "json",
 					"header": [
 						{
@@ -370,6 +370,59 @@
 					],
 					"cookie": [],
 					"body": "{\n    \"code\": 200,\n    \"status\": \"SUCCESS\",\n    \"message\": \"Success\"\n}"
+				},
+				{
+					"name": "Amount not equal",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"amount\": 220000\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/v1/billing-engine/user/payment",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"billing-engine",
+								"user",
+								"payment"
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 12 Nov 2024 12:18:25 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "90"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"code\": 400,\n    \"status\": \"VALIDATION_ERROR\",\n    \"message\": \"amount should be equal to due amount\"\n}"
 				}
 			]
 		}

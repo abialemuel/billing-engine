@@ -1,3 +1,9 @@
+-- Delete all tables if they exist
+DROP TABLE IF EXISTS Users CASCADE;
+DROP TABLE IF EXISTS Loans CASCADE;
+DROP TABLE IF EXISTS Payments CASCADE;
+DROP TABLE IF EXISTS Loan_Schedules CASCADE;
+
 -- Users table
 CREATE TABLE IF NOT EXISTS Users (
     id SERIAL PRIMARY KEY,
@@ -64,8 +70,6 @@ CREATE INDEX IF NOT EXISTS idx_loan_schedules_is_paid ON Loan_Schedules(is_paid)
 CREATE INDEX IF NOT EXISTS idx_loan_schedules_loan_id_due_date_is_paid
 ON Loan_Schedules(loan_id, due_date, is_paid);
 
--- Truncate all tables to start fresh
-TRUNCATE TABLE Payments, Loan_Schedules, Loans, Users RESTART IDENTITY CASCADE;
 
 -- Insert example user
 INSERT INTO Users (name, username, email) VALUES ('Abia Lemuel', 'abialemuel', 'abialemuel@example.com');
