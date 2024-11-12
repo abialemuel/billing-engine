@@ -1,0 +1,1489 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>config: Go Coverage Report</title>
+		<style>
+			body {
+				background: black;
+				color: rgb(80, 80, 80);
+			}
+			body, pre, #legend span {
+				font-family: Menlo, monospace;
+				font-weight: bold;
+			}
+			#topbar {
+				background: black;
+				position: fixed;
+				top: 0; left: 0; right: 0;
+				height: 42px;
+				border-bottom: 1px solid rgb(80, 80, 80);
+			}
+			#content {
+				margin-top: 50px;
+			}
+			#nav, #legend {
+				float: left;
+				margin-left: 10px;
+			}
+			#legend {
+				margin-top: 12px;
+			}
+			#nav {
+				margin-top: 10px;
+			}
+			#legend span {
+				margin: 0 5px;
+			}
+			.cov0 { color: rgb(192, 0, 0) }
+.cov1 { color: rgb(128, 128, 128) }
+.cov2 { color: rgb(116, 140, 131) }
+.cov3 { color: rgb(104, 152, 134) }
+.cov4 { color: rgb(92, 164, 137) }
+.cov5 { color: rgb(80, 176, 140) }
+.cov6 { color: rgb(68, 188, 143) }
+.cov7 { color: rgb(56, 200, 146) }
+.cov8 { color: rgb(44, 212, 149) }
+.cov9 { color: rgb(32, 224, 152) }
+.cov10 { color: rgb(20, 236, 155) }
+
+		</style>
+	</head>
+	<body>
+		<div id="topbar">
+			<div id="nav">
+				<select id="files">
+				
+				<option value="file0">github.com/abialemuel/billing-engine/config/config.go (66.1%)</option>
+				
+				<option value="file1">github.com/abialemuel/billing-engine/main.go (0.0%)</option>
+				
+				<option value="file2">github.com/abialemuel/billing-engine/mocks/config/config.go (62.5%)</option>
+				
+				<option value="file3">github.com/abialemuel/billing-engine/mocks/pkg/user/business/contract/repository.go (87.8%)</option>
+				
+				<option value="file4">github.com/abialemuel/billing-engine/pkg/common/amqp/publisher.go (0.0%)</option>
+				
+				<option value="file5">github.com/abialemuel/billing-engine/pkg/common/http/middleware/authguard/authguard.go (0.0%)</option>
+				
+				<option value="file6">github.com/abialemuel/billing-engine/pkg/common/http/parser.go (0.0%)</option>
+				
+				<option value="file7">github.com/abialemuel/billing-engine/pkg/common/http/response.go (0.0%)</option>
+				
+				<option value="file8">github.com/abialemuel/billing-engine/pkg/common/http/validator/validator.go (0.0%)</option>
+				
+				<option value="file9">github.com/abialemuel/billing-engine/pkg/common/time/time.go (0.0%)</option>
+				
+				<option value="file10">github.com/abialemuel/billing-engine/pkg/user/api/amqp/handler.go (0.0%)</option>
+				
+				<option value="file11">github.com/abialemuel/billing-engine/pkg/user/api/amqp/router.go (0.0%)</option>
+				
+				<option value="file12">github.com/abialemuel/billing-engine/pkg/user/api/http/handler.go (0.0%)</option>
+				
+				<option value="file13">github.com/abialemuel/billing-engine/pkg/user/api/http/response/billing_engine.go (0.0%)</option>
+				
+				<option value="file14">github.com/abialemuel/billing-engine/pkg/user/api/http/router.go (0.0%)</option>
+				
+				<option value="file15">github.com/abialemuel/billing-engine/pkg/user/business/user.go (97.1%)</option>
+				
+				<option value="file16">github.com/abialemuel/billing-engine/pkg/user/modules/repository/loam_schedule_repository.go (0.0%)</option>
+				
+				<option value="file17">github.com/abialemuel/billing-engine/pkg/user/modules/repository/loan_repository.go (76.5%)</option>
+				
+				<option value="file18">github.com/abialemuel/billing-engine/pkg/user/modules/repository/payment_repository.go (0.0%)</option>
+				
+				<option value="file19">github.com/abialemuel/billing-engine/pkg/user/modules/repository/repository.go (100.0%)</option>
+				
+				<option value="file20">github.com/abialemuel/billing-engine/pkg/user/modules/repository/user_repository.go (87.5%)</option>
+				
+				</select>
+			</div>
+			<div id="legend">
+				<span>not tracked</span>
+			
+				<span class="cov0">not covered</span>
+				<span class="cov8">covered</span>
+			
+			</div>
+		</div>
+		<div id="content">
+		
+		<pre class="file" id="file0" style="display: none">package config
+
+import (
+        "fmt"
+        "reflect"
+        "strings"
+
+        "github.com/go-playground/validator/v10"
+        "github.com/joho/godotenv"
+        "github.com/spf13/viper"
+)
+
+type Config interface {
+        Init(configPath string) error
+        Get() *MainConfig
+}
+
+type config struct {
+        Config *MainConfig
+}
+
+func New() Config <span class="cov8" title="1">{
+        return &amp;config{
+                Config: &amp;MainConfig{},
+        }
+}</span>
+
+func (c *config) Init(configPath string) error <span class="cov8" title="1">{
+        // Load environment variables from .env file
+        if err := godotenv.Load(); err != nil </span>{<span class="cov8" title="1">
+                // Log the error if needed, but continue to load other configurations
+        }</span>
+
+        <span class="cov8" title="1">if err := c.load(c.Config, ".", configPath); err != nil </span><span class="cov8" title="1">{
+                return err
+        }</span>
+        <span class="cov8" title="1">err := validator.New().Struct(c.Config)
+        if err != nil </span><span class="cov8" title="1">{
+                return err
+        }</span>
+
+        <span class="cov8" title="1">return nil</span>
+}
+
+func (c *config) Get() *MainConfig <span class="cov8" title="1">{
+        return c.Config
+}</span>
+
+func (c *config) load(cfg *MainConfig, path string, configPath string) error <span class="cov8" title="1">{
+        // Set default values
+        viper.SetDefault("log.level", "info")
+
+        viper.AddConfigPath(path)
+        if configPath != "" </span><span class="cov8" title="1">{
+                viper.SetConfigFile(configPath)
+        }</span>
+        <span class="cov8" title="1">viper.SetConfigType("yaml")
+        viper.SetEnvKeyReplacer(strings.NewReplacer(`.`, `_`))
+        viper.AutomaticEnv()
+
+        // Read the config file
+        if err := viper.ReadInConfig(); err != nil &amp;&amp; configPath != "" </span><span class="cov8" title="1">{
+                return err
+        }</span>
+
+        // Unmarshal the config into the struct
+        <span class="cov8" title="1">if err := viper.Unmarshal(cfg); err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        // Populate struct from environment variables using reflection
+        <span class="cov8" title="1">if err := c.populateFromEnv(cfg); err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov8" title="1">return nil</span>
+}
+
+// populateFromEnv populates struct fields from environment variables if the `env` tag is present
+func (c *config) populateFromEnv(cfg any) error <span class="cov8" title="1">{
+        val := reflect.ValueOf(cfg)
+
+        // Ensure that the value is a pointer to a struct
+        if val.Kind() != reflect.Ptr </span><span class="cov0" title="0">{
+                return fmt.Errorf("expected a pointer but got %v", val.Kind())
+        }</span>
+
+        <span class="cov8" title="1">if val.Elem().Kind() != reflect.Struct </span><span class="cov0" title="0">{
+                return fmt.Errorf("expected a pointer to struct but got %v", val.Elem().Kind())
+        }</span>
+
+        <span class="cov8" title="1">val = val.Elem()  // Dereference the pointer to get to the struct
+        typ := val.Type() // Get the struct type
+
+        return c.populate(val, typ)</span>
+}
+
+// populate recursively populates struct fields from environment variables if the `env` tag is present
+func (c *config) populate(val reflect.Value, typ reflect.Type) error <span class="cov8" title="1">{
+        for i := 0; i &lt; val.NumField(); i++ </span><span class="cov8" title="1">{
+                field := val.Field(i)
+                structField := typ.Field(i)
+
+                // Get the 'env' tag
+                envTag := structField.Tag.Get("env")
+                if envTag != "" </span><span class="cov8" title="1">{
+                        // Get the environment variable value from Viper
+                        envValue := viper.GetString(envTag)
+                        if envValue != "" </span><span class="cov0" title="0">{
+                                // Set the field based on its type
+                                switch field.Kind() </span>{
+                                case reflect.Ptr:<span class="cov0" title="0">
+                                        if field.Type().Elem().Kind() == reflect.String </span><span class="cov0" title="0">{
+                                                field.Set(reflect.ValueOf(&amp;envValue)) // set *string
+                                        }</span> else<span class="cov0" title="0"> if field.Type().Elem().Kind() == reflect.Int </span><span class="cov0" title="0">{
+                                                // Convert string to int before setting if it's an integer field
+                                                var intVal int
+                                                fmt.Sscanf(envValue, "%d", &amp;intVal)
+                                                field.Set(reflect.ValueOf(&amp;intVal)) // set *int
+                                        }</span>
+                                case reflect.String:<span class="cov0" title="0">
+                                        field.SetString(envValue)</span> // set string
+                                case reflect.Int:<span class="cov0" title="0">
+                                        // Convert string to int before setting if it's an integer field
+                                        var intVal int
+                                        fmt.Sscanf(envValue, "%d", &amp;intVal)
+                                        field.SetInt(int64(intVal))</span> // set int
+                                case reflect.Bool:<span class="cov0" title="0">
+                                        // Convert string to bool before setting if it's a boolean field
+                                        var boolVal bool
+                                        fmt.Sscanf(envValue, "%t", &amp;boolVal)
+                                        field.SetBool(boolVal)</span> // set bool
+                                }
+                        }
+                }
+
+                // Check if the field is a struct
+                <span class="cov8" title="1">if field.Kind() == reflect.Struct </span><span class="cov8" title="1">{
+                        // Call populate recursively for nested structs
+                        if err := c.populate(field, field.Type()); err != nil </span><span class="cov0" title="0">{
+                                return err
+                        }</span>
+                }
+        }
+
+        <span class="cov8" title="1">return nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file1" style="display: none">package main
+
+import (
+        "context"
+        "fmt"
+        "net/http"
+        "os"
+        "os/signal"
+        "time"
+
+        userAPIhttp "github.com/abialemuel/billing-engine/pkg/user/api/http"
+        "go.opentelemetry.io/contrib/instrumentation/github.com/labstack/echo/otelecho"
+        "gorm.io/driver/postgres"
+        "gorm.io/gorm"
+
+        mainCfg "github.com/abialemuel/billing-engine/config"
+        "github.com/abialemuel/billing-engine/pkg/common/http/middleware/authguard"
+        userBusiness "github.com/abialemuel/billing-engine/pkg/user/business"
+        userRepository "github.com/abialemuel/billing-engine/pkg/user/modules/repository"
+        "github.com/abialemuel/poly-kit/infrastructure/apm"
+        "github.com/abialemuel/poly-kit/infrastructure/logger"
+        loggerGen "github.com/abialemuel/poly-kit/infrastructure/logger"
+        "github.com/labstack/echo/v4"
+        mw "github.com/labstack/echo/v4/middleware"
+        dd "gopkg.in/DataDog/dd-trace-go.v1/contrib/labstack/echo.v4"
+)
+
+var (
+        APM *apm.APM
+        log loggerGen.Logger
+)
+
+func main() <span class="cov0" title="0">{
+        // config
+        cfg := initializeConfig("config.yaml")
+        log = initializeLogger(cfg)
+
+        // initialize apm
+        if cfg.Get().APM.Enabled </span><span class="cov0" title="0">{
+                host := ""
+                apmType := -1
+                if cfg.Get().APM.DDAgentHost != "" </span><span class="cov0" title="0">{
+                        host = fmt.Sprintf("%s:%d", cfg.Get().APM.DDAgentHost, cfg.Get().APM.DDAgentPort)
+                        apmType = apm.DatadogAPMType
+                }</span> else<span class="cov0" title="0"> {
+                        host = fmt.Sprintf("%s:%d", cfg.Get().APM.Host, cfg.Get().APM.Port)
+                        apmType = apm.OpenTelemetryAPMType
+                }</span>
+
+                <span class="cov0" title="0">apmPayload := apm.APMPayload{
+                        ServiceHost:    &amp;host,
+                        ServiceName:    cfg.Get().App.Name,
+                        ServiceEnv:     cfg.Get().App.Env,
+                        ServiceVersion: cfg.Get().App.Version,
+                        ServiceTribe:   cfg.Get().App.Name,
+                        SampleRate:     cfg.Get().APM.Rate,
+                }
+                APM, err := apm.NewAPM(apmType, apmPayload)
+                if err != nil </span><span class="cov0" title="0">{
+                        log.Get().Error(err)
+                        panic(err)</span>
+                }
+                <span class="cov0" title="0">fmt.Println("APM started...")
+                defer APM.EndAPM()</span>
+        }
+
+        // init postgresql
+        <span class="cov0" title="0">dsn := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
+                cfg.Get().Postgres.Host, cfg.Get().Postgres.Port, cfg.Get().Postgres.User, cfg.Get().Postgres.Password, cfg.Get().Postgres.DB)
+
+        db, err := gorm.Open(postgres.Open(dsn), &amp;gorm.Config{})
+        if err != nil </span><span class="cov0" title="0">{
+                log.Get().Error(err)
+                panic(err)</span>
+        }
+
+        <span class="cov0" title="0">userRepo := userRepository.NewPgDBRepository(db)
+
+        // init userService
+        userService := newUserService(cfg, db, userRepo)
+
+        // Init HTTP client
+        e := echo.New()
+        e.Use()
+        e.Use(mw.Recover())
+        // opentelemetry echo middleware
+        e.Use(otelecho.Middleware(cfg.Get().App.Name))
+        // datadog echo middleware
+        e.Use(dd.Middleware())
+        e.Use(mw.CORSWithConfig(
+                mw.CORSConfig{
+                        AllowOrigins: []string{"*"},
+                        AllowHeaders: []string{echo.HeaderContentType, echo.HeaderAuthorization, "X-Service"},
+                        AllowMethods: []string{http.MethodGet, http.MethodPut, http.MethodPatch, http.MethodPost, http.MethodDelete},
+                }))
+
+        //health check
+        e.GET("/", func(c echo.Context) error </span><span class="cov0" title="0">{
+                return c.NoContent(200)
+        }</span>)
+        <span class="cov0" title="0">e.GET("/health", func(c echo.Context) error </span><span class="cov0" title="0">{
+                return c.String(http.StatusOK, "OK")
+        }</span>)
+
+        // run server
+        <span class="cov0" title="0">go func() </span><span class="cov0" title="0">{
+                address := fmt.Sprintf(":%d", cfg.Get().App.Port)
+
+                if err := e.Start(address); err != nil </span><span class="cov0" title="0">{
+                        log.Get().Info("shutting down the server")
+                }</span>
+        }()
+
+        <span class="cov0" title="0">authGuard := authguard.NewAuthGuard(*cfg.Get())
+
+        // Register API
+        userHandler := userAPIhttp.NewHandler(userService, cfg.Get())
+        userAPIhttp.RegisterPath(e, userHandler, authGuard)
+
+        // Wait for interrupt signal to gracefully shutdown the server with
+        quit := make(chan os.Signal, 1)
+        signal.Notify(quit, os.Interrupt)
+        &lt;-quit
+
+        // a timeout of 10 seconds to shutdown the server
+        ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+        defer cancel()
+
+        if err := e.Shutdown(ctx); err != nil </span><span class="cov0" title="0">{
+                log.Get().Fatal(err)
+        }</span>
+}
+
+func initializeLogger(cfg mainCfg.Config) logger.Logger <span class="cov0" title="0">{
+        fmt.Printf("%s started...\n", cfg.Get().App.Name)
+        log := logger.New().Init(logger.Config{
+                Level:  cfg.Get().Log.Level,
+                Format: cfg.Get().Log.Format,
+        })
+        return log
+}</span>
+
+func initializeConfig(path string) mainCfg.Config <span class="cov0" title="0">{
+        cfg := mainCfg.New()
+        err := cfg.Init(path)
+        if err != nil </span><span class="cov0" title="0">{
+                fmt.Errorf("failed to load config: %s", err.Error())
+                panic(err)</span>
+        }
+        <span class="cov0" title="0">return cfg</span>
+}
+
+func newUserService(
+        cfg mainCfg.Config,
+        db *gorm.DB,
+        userRepo *userRepository.PgDBRepository,
+) userBusiness.UserService <span class="cov0" title="0">{
+        userService := userBusiness.NewUserService(userRepo, cfg, db)
+        return userService
+}</span>
+</pre>
+		
+		<pre class="file" id="file2" style="display: none">// Code generated by MockGen. DO NOT EDIT.
+// Source: config/config.go
+//
+// Generated by this command:
+//
+//        mockgen -source=config/config.go -destination=mocks/config/config.go -package=config Config
+//
+
+// Package config is a generated GoMock package.
+package config
+
+import (
+        reflect "reflect"
+
+        config "github.com/abialemuel/billing-engine/config"
+        gomock "go.uber.org/mock/gomock"
+)
+
+// MockConfig is a mock of Config interface.
+type MockConfig struct {
+        ctrl     *gomock.Controller
+        recorder *MockConfigMockRecorder
+}
+
+// MockConfigMockRecorder is the mock recorder for MockConfig.
+type MockConfigMockRecorder struct {
+        mock *MockConfig
+}
+
+// NewMockConfig creates a new mock instance.
+func NewMockConfig(ctrl *gomock.Controller) *MockConfig <span class="cov8" title="1">{
+        mock := &amp;MockConfig{ctrl: ctrl}
+        mock.recorder = &amp;MockConfigMockRecorder{mock}
+        return mock
+}</span>
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockConfig) EXPECT() *MockConfigMockRecorder <span class="cov8" title="1">{
+        return m.recorder
+}</span>
+
+// Get mocks base method.
+func (m *MockConfig) Get() *config.MainConfig <span class="cov8" title="1">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "Get")
+        ret0, _ := ret[0].(*config.MainConfig)
+        return ret0
+}</span>
+
+// Get indicates an expected call of Get.
+func (mr *MockConfigMockRecorder) Get() *gomock.Call <span class="cov8" title="1">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockConfig)(nil).Get))
+}</span>
+
+// Init mocks base method.
+func (m *MockConfig) Init(configPath string) error <span class="cov0" title="0">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "Init", configPath)
+        ret0, _ := ret[0].(error)
+        return ret0
+}</span>
+
+// Init indicates an expected call of Init.
+func (mr *MockConfigMockRecorder) Init(configPath any) *gomock.Call <span class="cov0" title="0">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Init", reflect.TypeOf((*MockConfig)(nil).Init), configPath)
+}</span>
+</pre>
+		
+		<pre class="file" id="file3" style="display: none">// Code generated by MockGen. DO NOT EDIT.
+// Source: pkg/user/business/contract/repository.go
+//
+// Generated by this command:
+//
+//        mockgen -source=pkg/user/business/contract/repository.go -destination=mocks/pkg/user/business/contract/repository.go -package=contract Repository
+//
+
+// Package contract is a generated GoMock package.
+package contract
+
+import (
+        context "context"
+        reflect "reflect"
+
+        repository "github.com/abialemuel/billing-engine/pkg/user/modules/repository"
+        gomock "go.uber.org/mock/gomock"
+        gorm "gorm.io/gorm"
+)
+
+// MockRepository is a mock of Repository interface.
+type MockRepository struct {
+        ctrl     *gomock.Controller
+        recorder *MockRepositoryMockRecorder
+}
+
+// MockRepositoryMockRecorder is the mock recorder for MockRepository.
+type MockRepositoryMockRecorder struct {
+        mock *MockRepository
+}
+
+// NewMockRepository creates a new mock instance.
+func NewMockRepository(ctrl *gomock.Controller) *MockRepository <span class="cov8" title="1">{
+        mock := &amp;MockRepository{ctrl: ctrl}
+        mock.recorder = &amp;MockRepositoryMockRecorder{mock}
+        return mock
+}</span>
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockRepository) EXPECT() *MockRepositoryMockRecorder <span class="cov8" title="1">{
+        return m.recorder
+}</span>
+
+// CreatePayment mocks base method.
+func (m *MockRepository) CreatePayment(ctx context.Context, tx *gorm.DB, payment *repository.Payment) error <span class="cov8" title="1">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "CreatePayment", ctx, tx, payment)
+        ret0, _ := ret[0].(error)
+        return ret0
+}</span>
+
+// CreatePayment indicates an expected call of CreatePayment.
+func (mr *MockRepositoryMockRecorder) CreatePayment(ctx, tx, payment any) *gomock.Call <span class="cov8" title="1">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreatePayment", reflect.TypeOf((*MockRepository)(nil).CreatePayment), ctx, tx, payment)
+}</span>
+
+// CreateSchedule mocks base method.
+func (m *MockRepository) CreateSchedule(ctx context.Context, tx *gorm.DB, schedule *repository.LoanSchedule) error <span class="cov0" title="0">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "CreateSchedule", ctx, tx, schedule)
+        ret0, _ := ret[0].(error)
+        return ret0
+}</span>
+
+// CreateSchedule indicates an expected call of CreateSchedule.
+func (mr *MockRepositoryMockRecorder) CreateSchedule(ctx, tx, schedule any) *gomock.Call <span class="cov0" title="0">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateSchedule", reflect.TypeOf((*MockRepository)(nil).CreateSchedule), ctx, tx, schedule)
+}</span>
+
+// GetLoanByUserID mocks base method.
+func (m *MockRepository) GetLoanByUserID(ctx context.Context, tx *gorm.DB, userID uint) (*repository.Loan, error) <span class="cov8" title="1">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "GetLoanByUserID", ctx, tx, userID)
+        ret0, _ := ret[0].(*repository.Loan)
+        ret1, _ := ret[1].(error)
+        return ret0, ret1
+}</span>
+
+// GetLoanByUserID indicates an expected call of GetLoanByUserID.
+func (mr *MockRepositoryMockRecorder) GetLoanByUserID(ctx, tx, userID any) *gomock.Call <span class="cov8" title="1">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetLoanByUserID", reflect.TypeOf((*MockRepository)(nil).GetLoanByUserID), ctx, tx, userID)
+}</span>
+
+// GetOverdueScheduleByLoanID mocks base method.
+func (m *MockRepository) GetOverdueScheduleByLoanID(ctx context.Context, tx *gorm.DB, loanID uint) ([]repository.LoanSchedule, error) <span class="cov8" title="1">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "GetOverdueScheduleByLoanID", ctx, tx, loanID)
+        ret0, _ := ret[0].([]repository.LoanSchedule)
+        ret1, _ := ret[1].(error)
+        return ret0, ret1
+}</span>
+
+// GetOverdueScheduleByLoanID indicates an expected call of GetOverdueScheduleByLoanID.
+func (mr *MockRepositoryMockRecorder) GetOverdueScheduleByLoanID(ctx, tx, loanID any) *gomock.Call <span class="cov8" title="1">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetOverdueScheduleByLoanID", reflect.TypeOf((*MockRepository)(nil).GetOverdueScheduleByLoanID), ctx, tx, loanID)
+}</span>
+
+// GetUserByUsername mocks base method.
+func (m *MockRepository) GetUserByUsername(ctx context.Context, tx *gorm.DB, username string) (*repository.User, error) <span class="cov8" title="1">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "GetUserByUsername", ctx, tx, username)
+        ret0, _ := ret[0].(*repository.User)
+        ret1, _ := ret[1].(error)
+        return ret0, ret1
+}</span>
+
+// GetUserByUsername indicates an expected call of GetUserByUsername.
+func (mr *MockRepositoryMockRecorder) GetUserByUsername(ctx, tx, username any) *gomock.Call <span class="cov8" title="1">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUserByUsername", reflect.TypeOf((*MockRepository)(nil).GetUserByUsername), ctx, tx, username)
+}</span>
+
+// UpdateLoan mocks base method.
+func (m *MockRepository) UpdateLoan(ctx context.Context, tx *gorm.DB, loan *repository.Loan) error <span class="cov8" title="1">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "UpdateLoan", ctx, tx, loan)
+        ret0, _ := ret[0].(error)
+        return ret0
+}</span>
+
+// UpdateLoan indicates an expected call of UpdateLoan.
+func (mr *MockRepositoryMockRecorder) UpdateLoan(ctx, tx, loan any) *gomock.Call <span class="cov8" title="1">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateLoan", reflect.TypeOf((*MockRepository)(nil).UpdateLoan), ctx, tx, loan)
+}</span>
+
+// UpdateSchedule mocks base method.
+func (m *MockRepository) UpdateSchedule(ctx context.Context, tx *gorm.DB, schedule *repository.LoanSchedule) error <span class="cov8" title="1">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "UpdateSchedule", ctx, tx, schedule)
+        ret0, _ := ret[0].(error)
+        return ret0
+}</span>
+
+// UpdateSchedule indicates an expected call of UpdateSchedule.
+func (mr *MockRepositoryMockRecorder) UpdateSchedule(ctx, tx, schedule any) *gomock.Call <span class="cov8" title="1">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateSchedule", reflect.TypeOf((*MockRepository)(nil).UpdateSchedule), ctx, tx, schedule)
+}</span>
+</pre>
+		
+		<pre class="file" id="file4" style="display: none">package amqp
+
+import (
+        "encoding/json"
+
+        "github.com/ThreeDotsLabs/watermill"
+        "github.com/ThreeDotsLabs/watermill/message"
+        "github.com/ThreeDotsLabs/watermill/message/router/middleware"
+)
+
+type Publisher struct {
+        pub message.Publisher
+        sub message.Subscriber
+}
+
+func NewPublisherSubscriber(pub message.Publisher, sub message.Subscriber) Publisher <span class="cov0" title="0">{
+        return Publisher{pub: pub, sub: sub}
+}</span>
+
+func (p Publisher) Publish(topic string, payload interface{}) error <span class="cov0" title="0">{
+        marshaledPayload, _ := json.Marshal(payload)
+        msg := message.NewMessage(watermill.NewUUID(), marshaledPayload)
+        middleware.SetCorrelationID(watermill.NewUUID(), msg)
+        if err := p.pub.Publish(topic, msg); err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+        <span class="cov0" title="0">return nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file5" style="display: none">package authguard
+
+import (
+        "net/http"
+        "strings"
+
+        common "github.com/abialemuel/billing-engine/pkg/common/http"
+
+        "github.com/abialemuel/billing-engine/config"
+        "github.com/labstack/echo/v4"
+)
+
+// Constants for handling JWT and keys
+var (
+        PrefixHeader      = "Bearer "
+        PrefixHeaderBasic = "Basic "
+)
+
+type BasicAuth struct {
+        Username string `json:"username"`
+        Password string `json:"password"`
+}
+
+// AuthGuard holds dependencies like API key and configuration
+type AuthGuard struct {
+        cfg config.MainConfig
+}
+
+// NewAuthGuard creates a new instance of AuthGuard
+func NewAuthGuard(cfg config.MainConfig) *AuthGuard <span class="cov0" title="0">{
+        return &amp;AuthGuard{
+                cfg: cfg,
+        }
+}</span>
+
+// Basic middleware validates Basic Auth tokens
+func (g *AuthGuard) Basic(next echo.HandlerFunc) echo.HandlerFunc <span class="cov0" title="0">{
+        return func(c echo.Context) error </span><span class="cov0" title="0">{
+                authHeader := c.Request().Header.Get("Authorization")
+
+                if !strings.HasPrefix(authHeader, PrefixHeaderBasic) </span><span class="cov0" title="0">{
+                        return c.JSON(http.StatusUnauthorized, common.NewUnauthorizedResponse("Authorization header missing/invalid"))
+                }</span>
+
+                <span class="cov0" title="0">username, _, ok := c.Request().BasicAuth()
+                if !ok </span><span class="cov0" title="0">{
+                        return c.JSON(http.StatusUnauthorized, common.NewUnauthorizedResponse("Invalid token"))
+                }</span>
+
+                // set the service name to the context
+                <span class="cov0" title="0">c.Set("username", username)
+
+                return next(c)</span>
+        }
+}
+</pre>
+		
+		<pre class="file" id="file6" style="display: none">package common
+
+import (
+        "bytes"
+        "fmt"
+        "io"
+        "mime/multipart"
+        "path/filepath"
+
+        "github.com/dslipak/pdf"
+)
+
+var supportedTextExtensions = map[string]bool{
+        ".go": true, ".js": true, ".txt": true, ".py": true, ".java": true,
+        ".cpp": true, ".c": true, ".cs": true, ".rb": true, ".php": true,
+        ".html": true, ".css": true, ".json": true, ".xml": true, ".sh": true,
+        ".yml": true, ".md": true, ".ini": true, ".conf": true, ".yaml": true,
+        ".cfg": true, ".log": true, ".sql": true, ".tsv": true, ".csv": true,
+        ".bat": true, ".toml": true, ".r": true, ".pl": true, ".m": true,
+        ".scala": true, ".swift": true, ".vb": true, ".rs": true, ".erl": true,
+        ".hs": true, ".lhs": true, ".tex": true, ".cls": true, ".sty": true,
+        ".scss": true, ".sass": true, ".less": true, ".asciidoc": true, ".pdf": true,
+        ".rst": true, ".org": true, ".srt": true, ".vtt": true, ".xslt": true,
+}
+
+func MultipleFileParserToText(files []*multipart.FileHeader) (map[string]string, error) <span class="cov0" title="0">{
+        fileMap := make(map[string]string)
+        for _, fileHeader := range files </span><span class="cov0" title="0">{
+                content, err := parseFile(fileHeader)
+                if err != nil </span><span class="cov0" title="0">{
+                        return nil, err
+                }</span>
+                <span class="cov0" title="0">fileMap[fileHeader.Filename] = content</span>
+        }
+        <span class="cov0" title="0">return fileMap, nil</span>
+}
+
+func parseFile(fileHeader *multipart.FileHeader) (string, error) <span class="cov0" title="0">{
+        file, err := fileHeader.Open()
+        if err != nil </span><span class="cov0" title="0">{
+                return "", fmt.Errorf("failed to open file: %v", err)
+        }</span>
+        <span class="cov0" title="0">defer file.Close()
+
+        ext := filepath.Ext(fileHeader.Filename)
+        switch </span>{
+        case ext == ".pdf":<span class="cov0" title="0">
+                return parsePDFFile(file)</span>
+        case supportedTextExtensions[ext]:<span class="cov0" title="0">
+                return parseTextFile(file)</span>
+        default:<span class="cov0" title="0">
+                return "", fmt.Errorf("unsupported file type: %s", fileHeader.Filename)</span>
+        }
+}
+
+func parseTextFile(file multipart.File) (string, error) <span class="cov0" title="0">{
+        var buf bytes.Buffer
+        if _, err := io.Copy(&amp;buf, file); err != nil </span><span class="cov0" title="0">{
+                return "", err
+        }</span>
+        <span class="cov0" title="0">return buf.String(), nil</span>
+}
+
+// parsePDFFile reads and parses a PDF file, returning the extracted text as a string.
+func parsePDFFile(file multipart.File) (string, error) <span class="cov0" title="0">{
+        // Reset the cursor to the start of the file
+        if _, err := file.Seek(0, io.SeekStart); err != nil </span><span class="cov0" title="0">{
+                return "", fmt.Errorf("failed to seek file start: %v", err)
+        }</span>
+
+        // Read the file content into memory
+        <span class="cov0" title="0">pdfData := &amp;bytes.Buffer{}
+        if _, err := io.Copy(pdfData, file); err != nil </span><span class="cov0" title="0">{
+                return "", fmt.Errorf("failed to read PDF file: %v", err)
+        }</span>
+
+        // Create a new PDF reader from the byte data
+        <span class="cov0" title="0">reader, err := pdf.NewReader(bytes.NewReader(pdfData.Bytes()), int64(pdfData.Len()))
+        if err != nil </span><span class="cov0" title="0">{
+                return "", fmt.Errorf("failed to create PDF reader: %v", err)
+        }</span>
+
+        // Extract text from all pages
+        <span class="cov0" title="0">textContent, err := getAllPagesText(reader)
+        if err != nil </span><span class="cov0" title="0">{
+                return "", fmt.Errorf("failed to extract text from PDF: %v", err)
+        }</span>
+
+        <span class="cov0" title="0">return textContent, nil</span>
+}
+
+// Helper function to iterate and extract text from all pages in the PDF.
+func getAllPagesText(reader *pdf.Reader) (string, error) <span class="cov0" title="0">{
+        var textContent string
+        for i := 1; i &lt;= reader.NumPage(); i++ </span><span class="cov0" title="0">{
+                page := reader.Page(i)
+
+                text, err := page.GetPlainText(nil)
+                if err != nil </span><span class="cov0" title="0">{
+                        return "", fmt.Errorf("failed to extract text from page %d: %v", i, err)
+                }</span>
+
+                <span class="cov0" title="0">textContent += text + "\n"</span>
+        }
+        <span class="cov0" title="0">return textContent, nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file7" style="display: none">package common
+
+// DefaultResponse default payload response
+type DefaultResponse struct {
+        Code    int    `json:"code"`
+        Status  string `json:"status,omitempty"`
+        Message string `json:"message"`
+        // Internal error  `json:"-"`
+}
+
+// NewValidationErrorResponse default validation error response
+func NewValidationErrorResponse(message string) DefaultResponse <span class="cov0" title="0">{
+        return DefaultResponse{
+                400,
+                ValidationErrStatus,
+                message,
+        }
+}</span>
+
+// NewUnauthorizedResponse default unauthorized response
+func NewUnauthorizedResponse(msg string) DefaultResponse <span class="cov0" title="0">{
+        return DefaultResponse{
+                401,
+                UnauthorizedStatus,
+                msg,
+        }
+}</span>
+
+// NewUnauthorizedResponse default unauthorized response
+func NewForbiddenResponse(msg string) DefaultResponse <span class="cov0" title="0">{
+        return DefaultResponse{
+                403,
+                ForbiddenStatus,
+                msg,
+        }
+}</span>
+
+// NewDefaultSuccessResponse default validation error response
+func NewDefaultSuccessResponse() DefaultResponse <span class="cov0" title="0">{
+        return DefaultResponse{
+                200,
+                SuccessStatus,
+                "Success",
+        }
+}</span>
+
+// NewDefaultSuccessResponse default validation error response
+func NewDefaultCreatedResponse() DefaultResponse <span class="cov0" title="0">{
+        return DefaultResponse{
+                201,
+                SuccessStatus,
+                "Success",
+        }
+}</span>
+
+// NewDefaultSuccessResponse default validation error response
+func NewDataNotFoundResponse(msg string) DefaultResponse <span class="cov0" title="0">{
+        return DefaultResponse{
+                404,
+                NotFoundStatus,
+                msg,
+        }
+}</span>
+
+// ErrorResponse error response
+type ErrorResponse struct {
+        Code     int    `json:"code"`
+        Status   string `json:"status,omitempty"`
+        Message  string `json:"message"`
+        Internal error  `json:"-"`
+}
+</pre>
+		
+		<pre class="file" id="file8" style="display: none">package validator
+
+import (
+        "fmt"
+
+        "github.com/go-playground/locales/en"
+        ut "github.com/go-playground/universal-translator"
+        "github.com/go-playground/validator/v10"
+        enTranslations "github.com/go-playground/validator/v10/translations/en"
+        "github.com/labstack/echo/v4"
+)
+
+var (
+        validate *validator.Validate
+        uni      *ut.UniversalTranslator
+        trans    ut.Translator
+)
+
+// GetValidator Initiatilize validator in singleton way
+func GetValidator() *validator.Validate <span class="cov0" title="0">{
+
+        if validate == nil </span><span class="cov0" title="0">{
+                validate = validator.New()
+        }</span>
+
+        <span class="cov0" title="0">return validate</span>
+}
+
+func getTrans() ut.Translator <span class="cov0" title="0">{
+        if trans == nil </span><span class="cov0" title="0">{
+                en := en.New()
+                uni = ut.New(en, en)
+                trans, _ = uni.GetTranslator("en")
+
+                enTranslations.RegisterDefaultTranslations(validate, trans)
+        }</span>
+
+        <span class="cov0" title="0">return trans</span>
+}
+
+func CreateValidationErrorMessage(err error) string <span class="cov0" title="0">{
+        for _, e := range err.(validator.ValidationErrors) </span><span class="cov0" title="0">{
+                translatedErr := fmt.Errorf(e.Translate(getTrans()))
+                return translatedErr.Error()
+        }</span>
+        <span class="cov0" title="0">return err.Error()</span>
+}
+
+func Validation(reg interface{}) (string, bool) <span class="cov0" title="0">{
+        var message string
+        var check bool = true
+
+        err := GetValidator().Struct(reg)
+        if err != nil </span><span class="cov0" title="0">{
+                _, check = err.(*echo.HTTPError)
+                if !check </span><span class="cov0" title="0">{
+                        message = CreateValidationErrorMessage(err)
+                }</span>
+        }
+        <span class="cov0" title="0">return message, check</span>
+}
+</pre>
+		
+		<pre class="file" id="file9" style="display: none">package time
+
+import "time"
+
+func GetOffsetTime() int <span class="cov0" title="0">{
+        t := time.Now()
+        _, offset := t.Zone()
+        return offset
+}</span>
+</pre>
+		
+		<pre class="file" id="file10" style="display: none">package amqp
+
+import (
+        "github.com/abialemuel/billing-engine/pkg/user/business"
+)
+
+type Handler struct {
+        service business.UserService
+}
+
+func NewHandler(s business.UserService) *Handler <span class="cov0" title="0">{
+        return &amp;Handler{service: s}
+}</span>
+</pre>
+		
+		<pre class="file" id="file11" style="display: none">package amqp
+
+import (
+        "github.com/ThreeDotsLabs/watermill/message"
+)
+
+func RegisterPath(r *message.Router, pub message.Publisher, sub message.Subscriber, h *Handler) {<span class="cov0" title="0">
+}</span>
+</pre>
+		
+		<pre class="file" id="file12" style="display: none">package http
+
+import (
+        "net/http"
+
+        "github.com/abialemuel/billing-engine/config"
+        common "github.com/abialemuel/billing-engine/pkg/common/http"
+        "github.com/abialemuel/billing-engine/pkg/common/http/validator"
+        "github.com/abialemuel/billing-engine/pkg/user/api/http/request"
+        "github.com/abialemuel/billing-engine/pkg/user/api/http/response"
+        "github.com/abialemuel/billing-engine/pkg/user/business"
+        "github.com/abialemuel/poly-kit/infrastructure/apm"
+        "github.com/labstack/echo/v4"
+)
+
+type Handler struct {
+        service business.UserService
+        config  *config.MainConfig
+}
+
+// NewHandler Construct user API handler
+func NewHandler(service business.UserService, cfg *config.MainConfig) *Handler <span class="cov0" title="0">{
+        return &amp;Handler{
+                service,
+                cfg,
+        }
+}</span>
+
+// GetOutstandingLoan Get outstanding loan by user ID
+func (h *Handler) GetOutstandingLoan(c echo.Context) error <span class="cov0" title="0">{
+        ctx, span := apm.StartTransaction(c.Request().Context(), "Handler::GetOutstandingLoan")
+        defer apm.EndTransaction(span)
+
+        username := c.Get("username").(string)
+
+        res, err := h.service.GetOutstandingLoan(ctx, username)
+        if err != nil </span><span class="cov0" title="0">{
+                return c.JSON(http.StatusInternalServerError, common.NewValidationErrorResponse(err.Error()))
+        }</span>
+        <span class="cov0" title="0">return c.JSON(http.StatusOK, response.NewOutstandingLoanInfoResponse(res))</span>
+}
+
+// MakePayment for loan
+func (h *Handler) MakePayment(c echo.Context) error <span class="cov0" title="0">{
+        ctx, span := apm.StartTransaction(c.Request().Context(), "Handler::MakePayment")
+        defer apm.EndTransaction(span)
+
+        req := new(request.MakePaymentReq)
+        if err := c.Bind(req); err != nil </span><span class="cov0" title="0">{
+                return c.JSON(http.StatusBadRequest, common.NewValidationErrorResponse("Invalid Body"))
+        }</span>
+        <span class="cov0" title="0">if msg, check := validator.Validation(req); !check </span><span class="cov0" title="0">{
+                return c.JSON(http.StatusBadRequest, common.NewValidationErrorResponse(msg))
+        }</span>
+
+        <span class="cov0" title="0">username := c.Get("username").(string)
+
+        err := h.service.MakePayment(ctx, username, req.Amount)
+        if err != nil </span><span class="cov0" title="0">{
+                return c.JSON(http.StatusInternalServerError, common.NewValidationErrorResponse(err.Error()))
+        }</span>
+        <span class="cov0" title="0">return c.JSON(http.StatusOK, common.NewDefaultSuccessResponse())</span>
+}
+</pre>
+		
+		<pre class="file" id="file13" style="display: none">package response
+
+import "github.com/abialemuel/billing-engine/pkg/user/business/model"
+
+type OutstandingLoanInfoResponse struct {
+        Code    int                 `json:"code"`
+        Message string              `json:"message"`
+        Payload OutstandingLoanInfo `json:"payload"`
+}
+
+type OutstandingLoanInfo struct {
+        LoanID         uint    `json:"loan_id"`
+        Username       string  `json:"username"`
+        Outstanding    float64 `json:"outstanding"`
+        IsDelinquent   bool    `json:"is_delinquent"`
+        UpcomingAmount float64 `json:"upcoming_amount"`
+        MissedPayment  uint    `json:"missed_payment"`
+}
+
+func NewOutstandingLoanInfoResponse(info model.OutstandingLoan) OutstandingLoanInfoResponse <span class="cov0" title="0">{
+        return OutstandingLoanInfoResponse{
+                Code:    200,
+                Message: "Success",
+                Payload: OutstandingLoanInfo{
+                        LoanID:         info.LoanID,
+                        Username:       info.Username,
+                        Outstanding:    info.OutstandingAmount,
+                        IsDelinquent:   info.IsDelinquent,
+                        UpcomingAmount: info.UpcomingAmount,
+                        MissedPayment:  info.MissedPayment,
+                },
+        }
+
+}</span>
+</pre>
+		
+		<pre class="file" id="file14" style="display: none">package http
+
+import (
+        "github.com/abialemuel/billing-engine/pkg/common/http/middleware/authguard"
+
+        "github.com/labstack/echo/v4"
+)
+
+// RegisterPath Register V1 API path
+func RegisterPath(e *echo.Echo, h *Handler, authGuard *authguard.AuthGuard) <span class="cov0" title="0">{
+        if h == nil </span><span class="cov0" title="0">{
+                panic("item controller cannot be nil")</span>
+        }
+
+        // Auth implementation
+        <span class="cov0" title="0">e.GET("/v1/billing-engine/user/outstanding", h.GetOutstandingLoan, authGuard.Basic)
+        e.POST("/v1/billing-engine/user/payment", h.MakePayment, authGuard.Basic)</span>
+
+}
+</pre>
+		
+		<pre class="file" id="file15" style="display: none">package business
+
+import (
+        "context"
+        "fmt"
+
+        mainCfg "github.com/abialemuel/billing-engine/config"
+        "github.com/abialemuel/billing-engine/pkg/user/business/contract"
+        "github.com/abialemuel/billing-engine/pkg/user/business/model"
+        "github.com/abialemuel/billing-engine/pkg/user/modules/repository"
+        "github.com/abialemuel/poly-kit/infrastructure/apm"
+        "gorm.io/gorm"
+)
+
+// UserService Business Logic of user domain
+type UserService struct {
+        db   *gorm.DB
+        repo contract.Repository
+        cfg  mainCfg.Config
+}
+
+// NewUserService creates a new instance of UserService
+func NewUserService(
+        repo contract.Repository,
+        cfg mainCfg.Config,
+        db *gorm.DB,
+) UserService <span class="cov8" title="1">{
+        return UserService{repo: repo, cfg: cfg, db: db}
+}</span>
+
+// GetOutstandingLoad
+func (s *UserService) GetOutstandingLoan(ctx context.Context, userID string) (res model.OutstandingLoan, err error) <span class="cov8" title="1">{
+        ctx, span := apm.StartTransaction(ctx, "UserService::GetOutstandingLoan")
+        defer apm.EndTransaction(span)
+
+        // Get user by ID
+        user, err := s.repo.GetUserByUsername(ctx, s.db, userID)
+        if err != nil </span><span class="cov8" title="1">{
+                return res, err
+        }</span>
+
+        // Get all loans by user ID
+        <span class="cov8" title="1">loan, err := s.repo.GetLoanByUserID(ctx, s.db, user.ID)
+        if err != nil </span><span class="cov8" title="1">{
+                return res, err
+        }</span>
+
+        // get all loan schedules by loan ID and check if the loan is overdue
+        <span class="cov8" title="1">schedules, err := s.repo.GetOverdueScheduleByLoanID(ctx, s.db, loan.ID)
+        if err != nil </span><span class="cov8" title="1">{
+                return res, err
+        }</span>
+
+        <span class="cov8" title="1">res.LoanID = loan.ID
+        res.Username = user.Username
+        res.OutstandingAmount = loan.Outstanding
+
+        overdueSchedulesCount := uint(len(schedules))
+        if overdueSchedulesCount &gt;= uint(s.cfg.Get().Billing.DelinquentThreshold) </span><span class="cov8" title="1">{
+                res.IsDelinquent = true
+        }</span> else<span class="cov8" title="1"> {
+                res.IsDelinquent = false
+        }</span>
+
+        <span class="cov8" title="1">res.MissedPayment = overdueSchedulesCount
+        res.UpcomingAmount = totalOverdueAmount(schedules)
+
+        return res, nil</span>
+}
+
+// MakePayment
+func (s *UserService) MakePayment(ctx context.Context, userID string, amount float64) error <span class="cov8" title="1">{
+        ctx, span := apm.StartTransaction(ctx, "UserService::MakePayment")
+        defer apm.EndTransaction(span)
+
+        // Start a transaction
+        tx := s.db.Begin()
+        if err := tx.Error; err != nil </span><span class="cov8" title="1">{
+                return fmt.Errorf("failed to start transaction: %w", err)
+        }</span>
+
+        // Ensure that transaction is either committed or rolled back
+        <span class="cov8" title="1">defer func() </span><span class="cov8" title="1">{
+                if r := recover(); r != nil </span><span class="cov0" title="0">{
+                        tx.Rollback()
+                        panic(r)</span> // Re-panic after rollback to maintain original error
+                } else<span class="cov8" title="1"> if err := tx.Commit().Error; err != nil </span><span class="cov8" title="1">{
+                        tx.Rollback() // Rollback if commit fails
+                }</span>
+        }()
+
+        // Get user by ID
+        <span class="cov8" title="1">user, err := s.repo.GetUserByUsername(ctx, tx, userID)
+        if err != nil </span><span class="cov8" title="1">{
+                tx.Rollback()
+                return fmt.Errorf("failed to get user: %w", err)
+        }</span>
+
+        // Get the loan by user ID
+        <span class="cov8" title="1">loan, err := s.repo.GetLoanByUserID(ctx, tx, user.ID)
+        if err != nil </span><span class="cov8" title="1">{
+                tx.Rollback()
+                return fmt.Errorf("failed to get loan: %w", err)
+        }</span>
+
+        // Get overdue loan schedules
+        <span class="cov8" title="1">schedules, err := s.repo.GetOverdueScheduleByLoanID(ctx, tx, loan.ID)
+        if err != nil </span><span class="cov8" title="1">{
+                tx.Rollback()
+                return fmt.Errorf("failed to get overdue schedules: %w", err)
+        }</span>
+
+        // Validate overdue schedules and payment amount
+        <span class="cov8" title="1">if len(schedules) == 0 </span><span class="cov8" title="1">{
+                tx.Rollback()
+                return fmt.Errorf("no overdue schedule found")
+        }</span>
+
+        <span class="cov8" title="1">if totalOverdueAmount(schedules) != amount </span><span class="cov8" title="1">{
+                tx.Rollback()
+                return fmt.Errorf("amount should be equal to due amount")
+        }</span>
+
+        // Update loan's outstanding amount
+        <span class="cov8" title="1">loan.Outstanding -= amount
+        if err := s.repo.UpdateLoan(ctx, tx, loan); err != nil </span><span class="cov8" title="1">{
+                tx.Rollback()
+                return fmt.Errorf("failed to update loan: %w", err)
+        }</span>
+
+        // Mark schedules as paid
+        <span class="cov8" title="1">for _, schedule := range schedules </span><span class="cov8" title="1">{
+                schedule.IsPaid = true
+                if err := s.repo.UpdateSchedule(ctx, tx, &amp;schedule); err != nil </span><span class="cov8" title="1">{
+                        tx.Rollback()
+                        return fmt.Errorf("failed to update loan schedule: %w", err)
+                }</span>
+        }
+
+        // create payment record
+        <span class="cov8" title="1">payment := repository.Payment{
+                LoanID:     loan.ID,
+                AmountPaid: amount,
+        }
+        if err := s.repo.CreatePayment(ctx, tx, &amp;payment); err != nil </span><span class="cov8" title="1">{
+                tx.Rollback()
+                return fmt.Errorf("failed to create payment: %w", err)
+        }</span>
+
+        <span class="cov8" title="1">return nil</span> // Transaction will be committed by the deferred function
+}
+
+func totalOverdueAmount(schedules []repository.LoanSchedule) float64 <span class="cov8" title="1">{
+        var total float64
+        for _, schedule := range schedules </span><span class="cov8" title="1">{
+                total += schedule.AmountDue
+        }</span>
+        <span class="cov8" title="1">return total</span>
+}
+</pre>
+		
+		<pre class="file" id="file16" style="display: none">package repository
+
+import (
+        "context"
+        "time"
+
+        "github.com/abialemuel/poly-kit/infrastructure/apm"
+        "gorm.io/gorm"
+        "gorm.io/gorm/clause"
+)
+
+func (r *PgDBRepository) GetOverdueScheduleByLoanID(ctx context.Context, tx *gorm.DB, loanID uint) ([]LoanSchedule, error) <span class="cov0" title="0">{
+        ctx, span := apm.StartTransaction(ctx, "Repository::GetOverdueScheduleByLoanID")
+        defer apm.EndTransaction(span)
+
+        db := r.db
+        if tx != nil </span><span class="cov0" title="0">{
+                db = tx
+        }</span>
+
+        <span class="cov0" title="0">var schedules []LoanSchedule
+        if err := db.WithContext(ctx).Where("loan_id = ? AND due_date &lt; ? AND is_paid = ?", loanID, time.Now(), false).Find(&amp;schedules).Error; err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov0" title="0">return schedules, nil</span>
+}
+
+func (r *PgDBRepository) CreateSchedule(ctx context.Context, tx *gorm.DB, schedule *LoanSchedule) error <span class="cov0" title="0">{
+        ctx, span := apm.StartTransaction(ctx, "Repository::CreateSchedule")
+        defer apm.EndTransaction(span)
+
+        db := r.db
+        if tx != nil </span><span class="cov0" title="0">{
+                db = tx
+        }</span>
+
+        <span class="cov0" title="0">if err := db.WithContext(ctx).Create(schedule).Error; err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+        <span class="cov0" title="0">return nil</span>
+}
+
+// UpdateSchedule updates a existing schedule record use map[string]interface{} to update the record
+func (r *PgDBRepository) UpdateSchedule(ctx context.Context, tx *gorm.DB, schedule *LoanSchedule) error <span class="cov0" title="0">{
+        ctx, span := apm.StartTransaction(ctx, "Repository::UpdateSchedule")
+        defer apm.EndTransaction(span)
+
+        db := r.db
+        if tx != nil </span><span class="cov0" title="0">{
+                db = tx
+        }</span>
+
+        <span class="cov0" title="0">if err := db.WithContext(ctx).Clauses(clause.Locking{Strength: "UPDATE"}).Save(schedule).Error; err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov0" title="0">return nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file17" style="display: none">package repository
+
+import (
+        "context"
+
+        "github.com/abialemuel/poly-kit/infrastructure/apm"
+        "gorm.io/gorm"
+        "gorm.io/gorm/clause"
+)
+
+func (r *PgDBRepository) GetLoanByUserID(ctx context.Context, tx *gorm.DB, userID uint) (*Loan, error) <span class="cov8" title="1">{
+        ctx, span := apm.StartTransaction(ctx, "Repository::GetLoanByUserID")
+        defer apm.EndTransaction(span)
+
+        db := r.db
+        if tx != nil </span><span class="cov0" title="0">{
+                db = tx
+        }</span>
+
+        <span class="cov8" title="1">var loan Loan
+        if err := db.WithContext(ctx).Clauses(clause.Locking{Strength: "UPDATE"}).Where("user_id = ?", userID).First(&amp;loan).Error; err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+        <span class="cov8" title="1">return &amp;loan, nil</span>
+}
+
+// UpdateLoan updates a existing loan record, using tx if provided
+func (r *PgDBRepository) UpdateLoan(ctx context.Context, tx *gorm.DB, loan *Loan) error <span class="cov8" title="1">{
+        ctx, span := apm.StartTransaction(ctx, "Repository::UpdateLoan")
+        defer apm.EndTransaction(span)
+
+        db := r.db
+        if tx != nil </span><span class="cov0" title="0">{
+                db = tx
+        }</span>
+
+        <span class="cov8" title="1">if err := db.WithContext(ctx).Save(loan).Error; err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+        <span class="cov8" title="1">return nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file18" style="display: none">package repository
+
+import (
+        "context"
+
+        "github.com/abialemuel/poly-kit/infrastructure/apm"
+        "gorm.io/gorm"
+)
+
+func (r *PgDBRepository) CreatePayment(ctx context.Context, tx *gorm.DB, payment *Payment) error <span class="cov0" title="0">{
+        ctx, span := apm.StartTransaction(ctx, "Repository::CreatePayment")
+        defer apm.EndTransaction(span)
+
+        db := r.db
+        if tx != nil </span><span class="cov0" title="0">{
+                db = tx
+        }</span>
+
+        <span class="cov0" title="0">if err := db.WithContext(ctx).Create(payment).Error; err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+        <span class="cov0" title="0">return nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file19" style="display: none">package repository
+
+import (
+        "gorm.io/gorm"
+)
+
+// PgDBRepository The implementation of user.Repository object
+type PgDBRepository struct {
+        db *gorm.DB
+}
+
+// NewPgDBRepository Generate pg user repository
+func NewPgDBRepository(db *gorm.DB) *PgDBRepository <span class="cov8" title="1">{
+        repo := PgDBRepository{db: db}
+
+        return &amp;repo
+}</span>
+</pre>
+		
+		<pre class="file" id="file20" style="display: none">package repository
+
+import (
+        "context"
+
+        "github.com/abialemuel/poly-kit/infrastructure/apm"
+        "gorm.io/gorm"
+)
+
+func (r *PgDBRepository) GetUserByUsername(ctx context.Context, tx *gorm.DB, username string) (*User, error) <span class="cov8" title="1">{
+        ctx, span := apm.StartTransaction(ctx, "Repository::GetUserByUsername")
+        defer apm.EndTransaction(span)
+
+        db := r.db
+        if tx != nil </span><span class="cov0" title="0">{
+                db = tx
+        }</span>
+
+        <span class="cov8" title="1">var user User
+        err := db.WithContext(ctx).Where("username = ?", username).First(&amp;user).Error
+        return &amp;user, err</span>
+}
+</pre>
+		
+		</div>
+	</body>
+	<script>
+	(function() {
+		var files = document.getElementById('files');
+		var visible;
+		files.addEventListener('change', onChange, false);
+		function select(part) {
+			if (visible)
+				visible.style.display = 'none';
+			visible = document.getElementById(part);
+			if (!visible)
+				return;
+			files.value = part;
+			visible.style.display = 'block';
+			location.hash = part;
+		}
+		function onChange() {
+			select(files.value);
+			window.scrollTo(0, 0);
+		}
+		if (location.hash != "") {
+			select(location.hash.substr(1));
+		}
+		if (!visible) {
+			select("file0");
+		}
+	})();
+	</script>
+</html>

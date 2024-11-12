@@ -8,7 +8,6 @@ import (
 	"os/signal"
 	"time"
 
-	"github.com/abialemuel/billing-engine/config"
 	userAPIhttp "github.com/abialemuel/billing-engine/pkg/user/api/http"
 	"go.opentelemetry.io/contrib/instrumentation/github.com/labstack/echo/otelecho"
 	"gorm.io/driver/postgres"
@@ -78,7 +77,7 @@ func main() {
 	userRepo := userRepository.NewPgDBRepository(db)
 
 	// init userService
-	userService := newUserService(cfg.Get(), db, userRepo)
+	userService := newUserService(cfg, db, userRepo)
 
 	// Init HTTP client
 	e := echo.New()
@@ -152,7 +151,7 @@ func initializeConfig(path string) mainCfg.Config {
 }
 
 func newUserService(
-	cfg *config.MainConfig,
+	cfg mainCfg.Config,
 	db *gorm.DB,
 	userRepo *userRepository.PgDBRepository,
 ) userBusiness.UserService {

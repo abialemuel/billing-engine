@@ -7,6 +7,7 @@ The **Billing-Engine Service** is a backend service responsible for handling loa
 - [Features](#features)
 - [ERD](#erd)
 - [Configuration](#configuration)
+- [Unit Testing](#running-tests)
 - [Setup and Installation](#setup-and-installation)
 - [Usage](#usage)
 - [API Endpoints](#api-endpoints)
@@ -39,6 +40,16 @@ Detail entity relational diagram
 ## Configuration
 
 - **Main Configuration**: `config.yaml`
+
+## Running Tests
+
+To run the tests and generate test results, use the following command:
+
+    ```sh
+    make test
+    ```
+
+
 
 ### `config.yaml`
 
@@ -99,7 +110,7 @@ Example Request:
     
 Example Response:
 
-    ```sh
+    ```bash
     {
         "code": 200,
         "message": "Success",

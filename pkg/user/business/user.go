@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/abialemuel/billing-engine/config"
+	mainCfg "github.com/abialemuel/billing-engine/config"
 	"github.com/abialemuel/billing-engine/pkg/user/business/contract"
 	"github.com/abialemuel/billing-engine/pkg/user/business/model"
 	"github.com/abialemuel/billing-engine/pkg/user/modules/repository"
@@ -16,13 +16,13 @@ import (
 type UserService struct {
 	db   *gorm.DB
 	repo contract.Repository
-	cfg  *config.MainConfig
+	cfg  mainCfg.Config
 }
 
 // NewUserService creates a new instance of UserService
 func NewUserService(
 	repo contract.Repository,
-	cfg *config.MainConfig,
+	cfg mainCfg.Config,
 	db *gorm.DB,
 ) UserService {
 	return UserService{repo: repo, cfg: cfg, db: db}
@@ -56,7 +56,7 @@ func (s *UserService) GetOutstandingLoan(ctx context.Context, userID string) (re
 	res.OutstandingAmount = loan.Outstanding
 
 	overdueSchedulesCount := uint(len(schedules))
-	if overdueSchedulesCount >= uint(s.cfg.Billing.DelinquentThreshold) {
+	if overdueSchedulesCount >= uint(s.cfg.Get().Billing.DelinquentThreshold) {
 		res.IsDelinquent = true
 	} else {
 		res.IsDelinquent = false

@@ -1,14 +1,26 @@
-# just sample config file for config testing
-App:
-    name: "billing-engine"
-    version: "1.0.0"
-    env: "dev"
+app:
+  name: "billing-engine"
+  port: 8080
+  version: "1.0.0"
+  env: "dev"
+billing:
+  delinquentThreshold: 2
 log:
-    level: "info"
-    format: "json"
+  level: "info"
+  format: "json"
+apm:
+  enabled: true
+  host: "jaeger"
+  port: 4317
+  rate: 1
+  ddAgentHost:
+  ddAgentPort: 8126
+postgres:
+  host: "postgres"
+  port: 5432
+  user: "root"
+  password: "pa55word"
+  db: "billing_engine"
 
-APM:
-    enabled: true
-    host: "otel-collector"
-    port: 4317
-    rate: 1
+
+
